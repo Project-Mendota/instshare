@@ -1,3 +1,5 @@
+import { SocketHandlerMap, SocketMessageHandler, SocketMessageData, SocketMessage, SocketMessageType } from "./types"
+
 /**
  * Socket is a wrapped WebSocket
  */
@@ -15,18 +17,22 @@ class Socket {
         this.handleClose();
     }
 
-    private handleMessage() {
+    private handleMessage(): void {
         this.socket.addEventListener("message", (message) => {
             if (typeof message.data == "string") {
-                const type = message.type as SocketMessageType;
+                const data = JSON.parse(message.data) as SocketMessage;
+                const type = data['type'];
                 switch (type) {
                     case "FILE_INIT": {
                         break;
                     }
-                    case "FILE_DATA": {
+                    case "FILE_INFO": {
                         break;
                     }
                     case "FILE_END": {
+                        break;
+                    }
+                    default: {
                         break;
                     }
                 }
@@ -34,46 +40,58 @@ class Socket {
         });
     }
 
-    private handleOpen() {
+    private handleOpen(): void {
         this.socket.addEventListener("open", () => {
             console.log("Socket Open!")
         });
     }
 
-    private handleClose() {
+    private handleClose(): void {
         this.socket.addEventListener("close", () => {
             console.log("Socket Closed!");
         });
     }
 
-    private handleError() {
+    private handleError(): void {
         this.socket.addEventListener("error", () => {
             console.log("error!");
         });
     }
 
-    private handleData(type: string, data: any) {
+    private handleData(type: string, data: any): void {
         const handler = this.handlers.get(type);
         if (handler != undefined) {
             handler(data);
         }
     }
 
+    /**
+     * Add data handler
+     * @param type type of handler
+     * @param handler handler
+     */
     public handle(type: string, handler: SocketMessageHandler): void {
         this.handlers.set(type, handler)
     }
 
+    /**
+     * Remove a data handler
+     * @param type type of handler
+     */
     public removeHandler(type: string): void {
         if (this.handlers.has(type)) {
             this.handlers.delete(type);
         }
     }
+
+    /**
+     * Send data through websocket
+     * @param type type of message
+     * @param data data of message
+     */
+    public send<T extends SocketMessageData>(type: SocketMessageType, data: T): void {
+        this.socket.send(JSON.stringify({ type, data }));
+    }
 }
 
-type SocketMessageData = Record<string, any>;
-type SocketMessageHandler = (data: SocketMessageData) => void;
-type SocketHandlerMap = Map<string, SocketMessageHandler>;
-type SocketMessageType = "FILE_INIT" | "FILE_DATA" | "FILE_END" | "";
-
 export { Socket };
-export type { SocketMessageHandler, SocketMessageType };

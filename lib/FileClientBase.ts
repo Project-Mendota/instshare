@@ -1,5 +1,6 @@
 import WebTorrent, { Instance, Torrent, TorrentFile } from "webtorrent";
 import { Socket } from "./Socket";
+import { SocketFileInfo } from "./types";
 
 class FileClientBase {
     private client: Instance;
@@ -12,7 +13,13 @@ class FileClientBase {
 
     public sendFile(files: File[]): void {
         this.client.seed(files, (torrent: Torrent) => {
-            console.log("Client is seeding:", torrent.infoHash);
+            // send files seed
+            this.socket.send<SocketFileInfo>("FILE_INFO", {
+                sender: "",
+                seed: "",
+                length: torrent.length
+            });
+
         });
     }
 
