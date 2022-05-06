@@ -6,7 +6,6 @@
     "project": "./tsconfig.json"
   },
   "extends": [
-    "airbnb-typescript",
     "next",
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
@@ -18,7 +17,8 @@
   "rules": {
     "@typescript-eslint/no-unsafe-assignment": "off",
     // allow spreading
-    "react/jsx-props-no-spreading": "off"
+    "react/jsx-props-no-spreading": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   },
   "ignorePatterns": "*.config.js"
 }
