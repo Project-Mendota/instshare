@@ -12,12 +12,32 @@ class FileClientBase {
     }
 
     public sendFile(files: File[]): void {
+        const fileMap = files.reduce((m, f) => {
+            m.set(`${f.name}${f.size}`, f);
+            return m;
+        }, new Map<string, File>());
+
         this.client.seed(files, (torrent: Torrent) => {
-            // send files seed
+
+            const fileInfo = torrent.files.map(f => {
+                let type = fileMap.get(`${f.name}${f.length}`)?.type;
+                // it is unreachable
+                if (type == null) {
+                    type = ""
+                }
+                return {
+                    name: f.name,
+                    length: f.length,
+                    type
+                }
+            });
+
+            // send files
             this.socket.send<SocketFileInfo>("FILE_INFO", {
                 sender: "",
-                seed: "",
-                length: torrent.length
+                seed: torrent.infoHash,
+                length: torrent.length,
+                fileInfo,
             });
 
         });

@@ -1,4 +1,10 @@
-import { SocketHandlerMap, SocketMessageHandler, SocketMessageData, SocketMessage, SocketMessageType } from "./types"
+import {
+    SocketHandlerMap,
+    SocketMessageHandler,
+    SocketMessageData,
+    SocketMessage,
+    SocketMessageType
+} from "./types"
 
 /**
  * Socket is a wrapped WebSocket
@@ -20,45 +26,40 @@ class Socket {
     private handleMessage(): void {
         this.socket.addEventListener("message", (message) => {
             if (typeof message.data == "string") {
-                const data = JSON.parse(message.data) as SocketMessage;
-                const type = data['type'];
-                switch (type) {
-                    case "FILE_INIT": {
-                        break;
-                    }
-                    case "FILE_INFO": {
-                        break;
-                    }
-                    case "FILE_END": {
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
+                const msg = JSON.parse(message.data) as SocketMessage;
+                this.handleData(msg.type, msg.data);
             }
         });
     }
 
+    /**
+     * handle open
+     */
     private handleOpen(): void {
         this.socket.addEventListener("open", () => {
             console.log("Socket Open!")
         });
     }
 
+    /**
+     * handle close
+     */
     private handleClose(): void {
         this.socket.addEventListener("close", () => {
             console.log("Socket Closed!");
         });
     }
 
+    /**
+     * handle error
+     */
     private handleError(): void {
         this.socket.addEventListener("error", () => {
             console.log("error!");
         });
     }
 
-    private handleData(type: string, data: any): void {
+    private handleData<T extends SocketMessageData>(type: SocketMessageType, data: T): void {
         const handler = this.handlers.get(type);
         if (handler != undefined) {
             handler(data);
@@ -70,7 +71,7 @@ class Socket {
      * @param type type of handler
      * @param handler handler
      */
-    public handle(type: string, handler: SocketMessageHandler): void {
+    public handle<T extends SocketMessageData>(type: string, handler: SocketMessageHandler<T>): void {
         this.handlers.set(type, handler)
     }
 
