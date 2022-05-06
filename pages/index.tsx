@@ -5,7 +5,7 @@ import Hello from '@components/Hello';
 const Home: FC = () => (
   <div>
     <Head>
-      <title>Welcome to Projekt Mendota</title>
+      <title>instShare, share with your friends</title>
       <meta name="description" content="Next app template" />
     </Head>
     <main>
