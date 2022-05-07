@@ -23,6 +23,9 @@ class Socket {
         this.handleClose();
     }
 
+    /**
+     * Handle message receive
+     */
     private handleMessage(): void {
         this.socket.addEventListener("message", (message) => {
             if (typeof message.data == "string") {
@@ -59,6 +62,11 @@ class Socket {
         });
     }
 
+    /**
+     * handle data by specific handler
+     * @param type
+     * @param data
+     */
     private handleData<T extends SocketMessageData>(type: SocketMessageType, data: T): void {
         const handler = this.handlers.get(type);
         if (handler != undefined) {
@@ -71,7 +79,7 @@ class Socket {
      * @param type type of handler
      * @param handler handler
      */
-    public handle<T extends SocketMessageData>(type: string, handler: SocketMessageHandler<T>): void {
+    public handle<T extends SocketMessageData>(type: SocketMessageType, handler: SocketMessageHandler<T>): void {
         this.handlers.set(type, handler)
     }
 

@@ -32,5 +32,6 @@ export type {
     SocketFileInfo,
     SocketHandlerMap,
     SocketMessageData,
-    SocketMessage
+    SocketMessage,
+    FileInfo,
 };
