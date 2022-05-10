@@ -29,7 +29,7 @@ class Socket {
     private handleMessage(): void {
         this.socket.addEventListener("message", (message) => {
             if (typeof message.data == "string") {
-                const msg = JSON.parse(message.data) as SocketMessage;
+                const msg = <SocketMessage> JSON.parse(message.data);
                 this.handleData(msg.type, msg.data);
             }
         });

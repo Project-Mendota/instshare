@@ -1,4 +1,4 @@
-
+type FileType = "VIDEO" | "IMG" | "COMMON" | "TEXT"
 type SocketMessageType = "FILE_INIT" | "FILE_INFO" | "FILE_END" | "";
 
 interface SocketMessage {
@@ -34,4 +34,5 @@ export type {
     SocketMessageData,
     SocketMessage,
     FileInfo,
+    FileType
 };
